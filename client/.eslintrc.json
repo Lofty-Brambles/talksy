@@ -1,0 +1,12 @@
+{
+	"extends": ["next/core-web-vitals", "next", "prettier"],
+	"rules": {
+		"init-declarations": ["error", "always"],
+		"no-console": "off",
+		"no-plusplus": "off",
+		"padded-blocks": "off",
+		"quotes": ["error", "double", { "allowTemplateLiterals": true }],
+		"semi": ["error", "always"],
+		"no-undef": "off"
+	}
+}
