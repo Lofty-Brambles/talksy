@@ -1,6 +1,5 @@
-import express from "express";
+import { Router as ExpressRouter } from "express";
 
-export const indexRouter = () => {
-	const router = express.Router();
-	return router;
-};
+const router = ExpressRouter();
+
+export const Router = router;

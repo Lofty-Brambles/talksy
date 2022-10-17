@@ -1,85 +1,31 @@
 import express, { NextFunction, Request, Response } from "express";
-import { config } from "dotenv";
 import path from "path";
 
 import createHttpError from "http-errors";
+import cors from "cors";
 import logger from "morgan";
 import compression from "compression";
 import helmet from "helmet";
 
-import mongoose from "mongoose";
-import session from "express-session";
-import passport from "passport";
-import { Strategy as LocalStrategy } from "passport-local";
-import { compare } from "bcryptjs";
-
-import { indexRouter } from "@routes/index";
-import { HttpException, UserType } from "./types";
-import { User } from "@models/User";
+import { Router } from "./routes";
+import { HttpException } from "./types";
 
 // init express
 const app = express();
 
-// database connection
-config();
-mongoose.connect(process.env.MONGO_URL!);
-const db = mongoose.connection;
-db.on("error", console.error.bind(console, "MongoDB connection error:"));
-
-// adds passport middleware
-passport.use(
-	new LocalStrategy(function (username, password, done) {
-		User.findOne({ username }).exec((err, user) => {
-			if (err) return done(err);
-			if (!user)
-				return done(null, false, { message: "Incorrect username" });
-			compare(password, user.password, (err, res) => {
-				if (err) return done(err);
-				if (res) return done(null, user);
-				else
-					return done(null, false, { message: "Incorrect password" });
-			});
-		});
-	})
-);
-
-passport.serializeUser(function (user, done) {
-	interface extendedUserType extends Express.User {
-		_id: string;
-	}
-
-	const extendedUser = user as extendedUserType;
-	done(null, extendedUser._id);
-});
-passport.deserializeUser(function (_id: string, done) {
-	User.findById(_id, function (err: Error, user: UserType) {
-		done(err, user);
-	});
-});
-
-// adds passport into express
-app.use(
-	session({
-		secret: process.env.SECRET!,
-		resave: false,
-		saveUninitialized: false,
-	})
-);
-app.use(passport.initialize());
-app.use(passport.session());
+// statics primer
+app.use("/public", express.static(path.join(__dirname, "../", "public")));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-// adds user object access from anywhere
-app.use((req, res, next) => {
-	res.locals.currentUser = req.user;
-	next();
-});
-
-// view engine and statics primer
-app.use(express.static(path.join(__dirname, "../", "public")));
-app.set("views", path.join(__dirname, "../", "views"));
-app.set("view engine", "pug");
+// adds cors middleware
+app.use(
+	cors({
+		origin: process.env.VALID_URLS!.split(",").map(e => e.trim()),
+		credentials: true,
+	})
+);
+app.options("*", cors());
 
 // logger
 if (app.get("env") === "development") {
@@ -93,7 +39,7 @@ if (app.get("env") === "production") {
 }
 
 // adds base routing
-app.use("/", indexRouter());
+app.use("/api", Router);
 
 // catch 404 and fwd
 app.use((req, res, next) => {
@@ -107,7 +53,7 @@ app.use(
 
 		// render error page
 		res.status(err.status || 500);
-		res.render("error");
+		res.send("error");
 	}
 );
 
