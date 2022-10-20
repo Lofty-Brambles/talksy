@@ -1,8 +1,9 @@
 import { Router as ExpressRouter } from "express";
-import { authRouter } from "@routes/auth.router";
+import { logIn, signUp } from "@routes/auth.router";
 
 const router = ExpressRouter();
 
-router.use("/auth", authRouter);
+router.post("/auth/signup", ...signUp);
+router.post("/auth/login", ...logIn);
 
 export const Router = router;
