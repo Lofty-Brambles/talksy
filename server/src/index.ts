@@ -1,6 +1,7 @@
 import { app } from "./app";
 import debug from "debug";
 import http from "http";
+import { PORT } from "@config/basic";
 
 // error handler
 const onError = (error: NodeJS.ErrnoException) => {
@@ -27,7 +28,7 @@ const onListening = () => {
 	debug(`Listening on ${bind}`);
 };
 
-const port: Number = +process.env.PORT! || 3000;
+const port: Number = PORT;
 const server = http.createServer(app);
 server.listen(port);
 server.on("error", onError);

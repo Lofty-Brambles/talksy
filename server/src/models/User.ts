@@ -4,7 +4,12 @@ import { model, Schema } from "mongoose";
 
 const UserSchema = new Schema(
 	{
-		username: { type: String, required: true, trim: true, minLength: 1 },
+		username: {
+			type: String,
+			required: true,
+			trim: true,
+			match: /^[a-z0-9_-]{1,30}$/gm,
+		},
 		email: {
 			type: String,
 			required: true,
@@ -19,7 +24,7 @@ const UserSchema = new Schema(
 		},
 
 		firstName: { type: String, required: true, trim: true, minLength: 1 },
-		secondName: { type: String, required: true, trim: true, minLength: 1 },
+		lastName: { type: String, required: true, trim: true, minLength: 1 },
 		profilePictureURL: {
 			type: String,
 			default: "",

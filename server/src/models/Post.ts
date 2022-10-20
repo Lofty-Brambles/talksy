@@ -1,7 +1,7 @@
 import { model, Schema } from "mongoose";
 import { CommentSchema, CommentType } from "@models/Comment";
 import { UserType } from "@models/User";
-import { feelingData } from "@utils/feeling-data";
+import { feelingData } from "@data/feeling-data";
 
 const PostSchema = new Schema(
 	{

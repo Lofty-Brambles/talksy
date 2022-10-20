@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from "express";
+import express from "express";
 import path from "path";
 
 import createHttpError from "http-errors";
@@ -7,8 +7,11 @@ import logger from "morgan";
 import compression from "compression";
 import helmet from "helmet";
 
-import { Router } from "./routes";
-import { HttpException } from "./types";
+import "express-async-errors";
+
+import { Router } from "./routes/index.router";
+import { VALID_URLS } from "@config/basic";
+import { errorHandler } from "src/middlewares/error-handler";
 
 // init express
 const app = express();
@@ -21,7 +24,7 @@ app.use(express.json());
 // adds cors middleware
 app.use(
 	cors({
-		origin: process.env.VALID_URLS!.split(",").map(e => e.trim()),
+		origin: VALID_URLS,
 		credentials: true,
 	})
 );
@@ -45,16 +48,8 @@ app.use("/api", Router);
 app.use((req, res, next) => {
 	next(createHttpError(404));
 });
-// error handler
-app.use(
-	(err: HttpException, req: Request, res: Response, next: NextFunction) => {
-		res.locals.message = res.locals.error =
-			req.app.get("env") === "development" ? err : {};
 
-		// render error page
-		res.status(err.status || 500);
-		res.send("error");
-	}
-);
+// error handler
+app.use(errorHandler);
 
 export { app };
