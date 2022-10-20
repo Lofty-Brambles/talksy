@@ -11,7 +11,7 @@ import "express-async-errors";
 
 import { Router } from "./routes/index.router";
 import { VALID_URLS } from "@config/basic";
-import { errorHandler } from "src/middlewares/error-handler";
+import { errorHandler } from "@middlewares/error-handler";
 
 // init express
 const app = express();

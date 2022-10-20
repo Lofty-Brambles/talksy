@@ -2,7 +2,7 @@ import { HttpException } from "./HttpsException";
 import { BadRequest } from "./BadRequest";
 import { Conflict } from "./Conflict";
 import { Forbidden } from "./Forbidden";
-import { MethodNotAllowed } from "./MethodnotAllowed";
+import { MethodNotAllowed } from "./MethodNotAllowed";
 import { NotFound } from "./NotFound";
 import { Unauthorized } from "./Unauthorised";
 

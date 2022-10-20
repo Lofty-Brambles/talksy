@@ -5,6 +5,8 @@ client/coverage
 client/.next/
 client/out/
 
+server/dist/
+
 .pnpm-debug.log*
 pnpm-lock.yaml
 

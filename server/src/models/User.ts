@@ -1,6 +1,6 @@
 // TODO: Needs work on the notification settings
 
-import { model, Schema } from "mongoose";
+import { model, Schema, Types } from "mongoose";
 
 const UserSchema = new Schema(
 	{
@@ -39,6 +39,11 @@ const UserSchema = new Schema(
 		},
 		bio: { type: String, trim: true, maxLength: 1000 },
 
+		friends: [{ type: Schema.Types.ObjectId, ref: "User" }],
+		friendRequests: [{ type: Schema.Types.ObjectId, ref: "User" }],
+		posts: [{ type: Schema.Types.ObjectId, ref: "Post" }],
+		sessions: [{ type: String }],
+
 		notificationSettings: {},
 		viewSettings: {
 			textIndent: {
@@ -67,7 +72,11 @@ export type UserType = {
 	profilePictureURL: string;
 	bannerPictureURL: string;
 	bio: string;
-	createdOn: Date;
+
+	friends: Types.ObjectId[];
+	friendRequests: Types.ObjectId[];
+	posts: Types.ObjectId[];
+	sessions: string[];
 
 	notificationSettings: {};
 	viewSettings: {
