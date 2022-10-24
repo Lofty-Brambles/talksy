@@ -3,8 +3,8 @@ import "express-async-errors";
 import { compare, hash } from "bcryptjs";
 import { sign } from "jsonwebtoken";
 
-import { ACCESSORS, REFRESHERS, HASH_SALT } from "@config/basic";
-import { UserType } from "@models/User";
+import { ACCESSORS, REFRESHERS, HASH_SALT } from "@/config/basic";
+import { UserType } from "@/models/User";
 import { Types } from "mongoose";
 
 export class AuthService {

@@ -1,7 +1,7 @@
 import { app } from "./app";
 import debug from "debug";
 import http from "http";
-import { PORT } from "@config/basic";
+import { PORT } from "@/config/basic";
 
 // error handler
 const onError = (error: NodeJS.ErrnoException) => {

@@ -1,7 +1,7 @@
-/** @type {import('').Config} */
-const Config = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
 	reactStrictMode: true,
 	swcMinify: true,
 };
 
-module.exports = Config;
+module.exports = nextConfig;

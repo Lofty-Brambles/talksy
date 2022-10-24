@@ -1,5 +1,5 @@
 {
-	"extends": ["next/core-web-vitals", "next", "prettier"],
+	"extends": ["next", "prettier"],
 	"rules": {
 		"init-declarations": ["error", "always"],
 		"no-console": "off",

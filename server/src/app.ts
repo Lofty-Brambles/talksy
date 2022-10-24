@@ -10,8 +10,8 @@ import helmet from "helmet";
 import "express-async-errors";
 
 import { Router } from "./routes/index.router";
-import { VALID_URLS } from "@config/basic";
-import { errorHandler } from "@middlewares/error-handler";
+import { VALID_URLS } from "@/config/basic";
+import { errorHandler } from "@/middlewares/error-handler";
 
 // init express
 const app = express();

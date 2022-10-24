@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
-import { CommentSchema, CommentType } from "@models/Comment";
-import { UserType } from "@models/User";
+import { CommentSchema, CommentType } from "@/models/Comment";
+import { UserType } from "@/models/User";
 
 export const ReelSchema = new Schema(
 	{

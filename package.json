@@ -1,36 +1,36 @@
 {
-  "name": "talksy",
-  "version": "0.1.0",
-  "scripts": {
-    "lint:client": "cd client/ && pnpm run lint && cd ..",
-    "lint:server": "cd server/ && pnpm run lint && cd ..",
-    "lint": "pnpm run lint:client && pnpm run lint:server",
-    "dev:client": "cd client/ && pnpm run dev && cd ..",
-    "dev:server": "cd server/ && pnpm run dev && cd ..",
-    "dev": "pnpm run dev:client && pnpm run dev:server",
-    "build:client": "cd client/ && pnpm run build && cd ..",
-    "build:server": "cd server/ && pnpm run build && cd ..",
-    "build": "pnpm run build:client && pnpm run build:server",
-    "prepare": "husky install"
-  },
-  "devDependencies": {
-    "husky": "^8.0.0",
-    "lint-staged": "^13.0.3"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "client/**/*.{ts, tsx, css}": [
-      "pnpm run lint:client"
-    ],
-    "server/**/*.{ts}": [
-      "pnpm run lint:server"
-    ]
-  },
-  "dependencies": {
-    "cty": "^1.0.3"
-  }
+	"name": "talksy",
+	"version": "0.1.0",
+	"scripts": {
+		"lint:client": "cd client && pnpm run lint && cd ..",
+		"lint:server": "cd server && pnpm run lint && cd ..",
+		"dev:client": "cd client && pnpm run dev && cd ..",
+		"dev:server": "cd server && pnpm run dev && cd ..",
+		"dev": "pnpm run dev:client && pnpm run dev:server",
+		"build:client": "cd client && pnpm run build && cd ..",
+		"build:server": "cd server && pnpm run build && cd ..",
+		"build": "pnpm run build:client && pnpm run build:server",
+		"prepare": "husky install"
+	},
+	"devDependencies": {
+		"husky": "^8.0.0",
+		"lint-staged": "^13.0.3",
+		"prettier": "^2.7.1"
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "node_modules/.bin/lint-staged"
+		}
+	},
+	"lint-staged": {
+		"client/**/*.{ts, tsx, css}": [
+			"next lint"
+		],
+		"server/**/*.{ts}": [
+			"pnpm prettier --write ."
+		]
+	},
+	"dependencies": {
+		"cty": "^1.0.3"
+	}
 }

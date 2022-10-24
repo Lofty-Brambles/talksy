@@ -9,7 +9,7 @@
 		"start:dev": "nodemon dist/index.js",
 		"build:dev": "tsc --watch --preserveWatchOutput",
 		"dev": "concurrently \"npm run build:dev\" \"tsc-alias -w\" \"npm run start:dev\"",
-		"lint": "eslint --fix && pnpm prettier --write --loglevel=silent ."
+		"lint": "pnpm prettier --write ."
 	},
 	"dependencies": {
 		"async": "^3.2.4",
