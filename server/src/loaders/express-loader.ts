@@ -1,3 +1,5 @@
+import "express-async-errors";
+
 import { urlencoded, json, static as expressStatic, Express } from "express";
 import path from "path";
 

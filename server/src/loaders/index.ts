@@ -18,5 +18,5 @@ export const mainLoader = async (expressApp: Express) => {
 	log("Passport methods are loaded!", "log");
 
 	routeLoader(expressApp);
-	log("Routes are loaded!");
+	log("Routes are loaded!", "log");
 };

@@ -2,6 +2,7 @@ import "express-async-errors";
 
 import { body } from "express-validator";
 import { hash, verify } from "argon2";
+
 import { UserType } from "@/models/User";
 
 export class AuthServices {
@@ -98,7 +99,7 @@ export class AuthServices {
 	}
 
 	static purifyUser(user: UserType) {
-		const { password, ...purifiedUser } = user;
+		const { password, facebookID, ...purifiedUser } = user;
 		return purifiedUser;
 	}
 }

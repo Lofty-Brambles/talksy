@@ -10,6 +10,7 @@
 		"build:client": "cd client && pnpm run build && cd ..",
 		"build:server": "cd server && pnpm run build && cd ..",
 		"build": "pnpm run build:client && pnpm run build:server",
+		"commit": "cty",
 		"prepare": "husky install"
 	},
 	"devDependencies": {

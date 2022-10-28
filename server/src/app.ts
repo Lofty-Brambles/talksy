@@ -6,10 +6,10 @@ import { log } from "./utils/logger";
 
 const onInit = () => {
 	log(
-		`=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-   Server listening on port - ${PORT}
-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=`,
-		"log"
+		`=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    Server listening on port - ${PORT}
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=`,
+		"ready"
 	);
 };
 
@@ -29,6 +29,13 @@ const onError = (error: NodeJS.ErrnoException) => {
 
 const serverStart = async () => {
 	const app = express();
+	log(
+		`=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    Initializing Express Server
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	`,
+		"log"
+	);
 	await mainLoader(app);
 	app.listen(PORT, onInit).on("error", onError);
 };

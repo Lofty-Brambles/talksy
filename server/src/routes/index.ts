@@ -1,5 +1,8 @@
+import "express-async-errors";
+
 import { Router } from "express";
-import { authRouter } from "./auth.router";
+
+import { authRouter } from "@/routes/auth.router";
 
 export const routing = () => {
 	const router = Router();

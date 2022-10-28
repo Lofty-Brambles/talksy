@@ -2,11 +2,11 @@ import "express-async-errors";
 
 import { NextFunction, Request, Response } from "express";
 import { validationResult } from "express-validator";
+import passport from "passport";
 
 import { AuthServices } from "@/services/auth.services";
 import { BadRequest, Conflict } from "@/utils/err-classes";
 import { User } from "@/models/User";
-import passport from "passport";
 
 export class AuthController {
 	static async signup(req: Request, res: Response) {
@@ -58,7 +58,10 @@ export class AuthController {
 						validations.array()
 					);
 			},
-			passport.authenticate("local"),
+			passport.authenticate("local", {
+				failureFlash: true,
+				failureMessage: "Invalid Login Credentials.",
+			}),
 			(req: Request, res: Response) =>
 				res.status(200).json({
 					message: "User logged in successfully!",
@@ -79,7 +82,10 @@ export class AuthController {
 	}
 
 	static facebookLogin() {
-		return passport.authenticate("facebook");
+		return passport.authenticate("facebook", {
+			failureFlash: true,
+			failureMessage: "Invalid Login Credentials.",
+		});
 	}
 
 	static facebookLoginCallback() {

@@ -1,6 +1,9 @@
+import "express-async-errors";
+
+import { Router } from "express";
+
 import { AuthController } from "@/controllers/auth.controller";
 import { AuthServices } from "@/services/auth.services";
-import { Router } from "express";
 
 export const authRouter = (router: Router) => {
 	router.post(

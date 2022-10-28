@@ -1,9 +1,12 @@
+import "express-async-errors";
+
 import { Express } from "express";
 import passport from "passport";
+
 import { LocalStrategy } from "@/utils/strategies/local";
 import { FacebookStrategy } from "@/utils/strategies/facebook";
-import { AuthServices } from "@/services/auth.services";
 import { UserType } from "@/models/User";
+import { AuthServices } from "@/services/auth.services";
 
 export const passportLoader = (app: Express) => {
 	passport.use(LocalStrategy);

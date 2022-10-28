@@ -1,3 +1,5 @@
+import "express-async-errors";
+
 import { Express } from "express";
 import createHttpError from "http-errors";
 

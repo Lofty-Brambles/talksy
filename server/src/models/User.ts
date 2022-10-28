@@ -8,7 +8,7 @@ const UserSchema = new Schema(
 			type: String,
 			required: true,
 			trim: true,
-			match: /^[a-z0-9_-]{1,30}$/gm,
+			match: /^[a-z0-9_-]{1,32}$/gm,
 		},
 		email: {
 			type: String,
@@ -18,7 +18,7 @@ const UserSchema = new Schema(
 		},
 		password: {
 			type: String,
-			trim: false,
+			trim: true,
 			match: /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/gm,
 		},
 
@@ -40,6 +40,7 @@ const UserSchema = new Schema(
 		friends: [{ type: Schema.Types.ObjectId, ref: "User" }],
 		friendRequests: [{ type: Schema.Types.ObjectId, ref: "User" }],
 		posts: [{ type: Schema.Types.ObjectId, ref: "Post" }],
+		reels: [{ type: Schema.Types.ObjectId, ref: "Reel" }],
 
 		notificationSettings: {},
 		viewSettings: {
@@ -68,10 +69,12 @@ export type UserType = {
 	profilePictureURL: string;
 	bannerPictureURL: string;
 	bio: string;
+	facebookID: string;
 
 	friends: Types.ObjectId[];
 	friendRequests: Types.ObjectId[];
 	posts: Types.ObjectId[];
+	reels: Types.ObjectId[];
 
 	notificationSettings: {};
 	viewSettings: {
