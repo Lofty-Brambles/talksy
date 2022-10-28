@@ -18,7 +18,6 @@ const UserSchema = new Schema(
 		},
 		password: {
 			type: String,
-			required: true,
 			trim: false,
 			match: /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/gm,
 		},
@@ -27,36 +26,33 @@ const UserSchema = new Schema(
 		lastName: { type: String, required: true, trim: true, minLength: 1 },
 		profilePictureURL: {
 			type: String,
-			default: "",
 			trim: true,
 			match: /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_\+.~#?&\/\/=]*)/gm,
 		},
 		bannerPictureURL: {
 			type: String,
-			default: "",
 			trim: true,
 			match: /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_\+.~#?&\/\/=]*)/gm,
 		},
 		bio: { type: String, trim: true, maxLength: 1000 },
+		facebookID: { type: String, trim: true, required: false },
 
 		friends: [{ type: Schema.Types.ObjectId, ref: "User" }],
 		friendRequests: [{ type: Schema.Types.ObjectId, ref: "User" }],
 		posts: [{ type: Schema.Types.ObjectId, ref: "Post" }],
-		sessions: [{ type: String }],
 
 		notificationSettings: {},
 		viewSettings: {
 			textIndent: {
 				type: String,
 				required: true,
-				default: "m",
 				trim: true,
 				lowercase: true,
 				enum: ["s", "m", "l"],
 			},
-			justify: { type: Boolean, required: true, default: false },
-			sans: { type: Boolean, required: true, default: false },
-			darkMode: { type: Boolean, required: true, default: false },
+			justify: { type: Boolean, required: true },
+			sans: { type: Boolean, required: true },
+			darkMode: { type: Boolean, required: true },
 		},
 	},
 	{ strict: true }
@@ -76,7 +72,6 @@ export type UserType = {
 	friends: Types.ObjectId[];
 	friendRequests: Types.ObjectId[];
 	posts: Types.ObjectId[];
-	sessions: string[];
 
 	notificationSettings: {};
 	viewSettings: {

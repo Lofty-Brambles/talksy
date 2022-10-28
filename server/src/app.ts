@@ -1,55 +1,36 @@
 import express from "express";
-import path from "path";
 
-import createHttpError from "http-errors";
-import cors from "cors";
-import logger from "morgan";
-import compression from "compression";
-import helmet from "helmet";
+import { mainLoader } from "@/loaders";
+import { PORT } from "@/config";
+import { log } from "./utils/logger";
 
-import "express-async-errors";
+const onInit = () => {
+	log(
+		`=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+   Server listening on port - ${PORT}
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=`,
+		"log"
+	);
+};
 
-import { Router } from "./routes/index.router";
-import { VALID_URLS } from "@/config/basic";
-import { errorHandler } from "@/middlewares/error-handler";
+const onError = (error: NodeJS.ErrnoException) => {
+	if (error.syscall !== "listen") throw error;
+	switch (error.code) {
+		case "EACCES":
+			log(`Port ${PORT} requires elevated privileges.`, "error");
+			process.exit(1);
+		case "EADDRINUSE":
+			log(`Port ${PORT} is already in use.`, "error");
+			process.exit(1);
+		default:
+			throw error;
+	}
+};
 
-// init express
-const app = express();
+const serverStart = async () => {
+	const app = express();
+	await mainLoader(app);
+	app.listen(PORT, onInit).on("error", onError);
+};
 
-// statics primer
-app.use("/public", express.static(path.join(__dirname, "../", "public")));
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
-
-// adds cors middleware
-app.use(
-	cors({
-		origin: VALID_URLS,
-		credentials: true,
-	})
-);
-app.options("*", cors());
-
-// logger
-if (app.get("env") === "development") {
-	app.use(logger("dev"));
-}
-
-// security
-if (app.get("env") === "production") {
-	app.use(compression());
-	app.use(helmet());
-}
-
-// adds base routing
-app.use("/api", Router);
-
-// catch 404 and fwd
-app.use((req, res, next) => {
-	next(createHttpError(404));
-});
-
-// error handler
-app.use(errorHandler);
-
-export { app };
+serverStart();

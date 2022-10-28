@@ -1,22 +1,18 @@
-import { Request, Response } from "express";
-import { validationResult } from "express-validator";
-import { Document, Types } from "mongoose";
+import "express-async-errors";
 
-import { AuthService } from "@/services/auth.services";
-import { User, UserType } from "@/models/User";
-import {
-	BadRequest,
-	Conflict,
-	NotFound,
-	Unauthorized,
-} from "../types-n-classes";
-import { ACCESSORS, REFRESHERS } from "@/config/basic";
+import { NextFunction, Request, Response } from "express";
+import { validationResult } from "express-validator";
+
+import { AuthServices } from "@/services/auth.services";
+import { BadRequest, Conflict } from "@/utils/err-classes";
+import { User } from "@/models/User";
+import passport from "passport";
 
 export class AuthController {
 	static async signup(req: Request, res: Response) {
 		const validations = validationResult(req);
 		if (!validations.isEmpty())
-			throw new BadRequest("Validation Errors", validations.array());
+			throw new BadRequest("Validation Errors: ", validations.array());
 
 		const {
 			username,
@@ -34,7 +30,7 @@ export class AuthController {
 				"The Email already has an account attached to it."
 			);
 
-		const hashedPassword = AuthService.hashPass(password);
+		const hashedPassword = AuthServices.hashPass(password);
 		const newUser = new User({
 			username,
 			email,
@@ -52,83 +48,49 @@ export class AuthController {
 		});
 	}
 
-	static async login(req: Request, res: Response) {
-		const validations = validationResult(req);
-		if (!validations.isEmpty())
-			throw new BadRequest("Validation Errors", validations.array());
-
-		let user:
-			| (Document<unknown, any, UserType> &
-					UserType & {
-						_id: Types.ObjectId;
-					})
-			| null;
-		const { usernameOrEmail, password } = req.body;
-		if (/@/g.test(usernameOrEmail))
-			user = await User.findOne({ email: usernameOrEmail });
-		else user = await User.findOne({ username: usernameOrEmail });
-
-		if (user !== null) {
-			const isPasswordValid = await AuthService.comparePass(
-				password,
-				user?.password as string
-			);
-			if (!isPasswordValid)
-				throw new Unauthorized("Wrong password entered.");
-
-			const accesstoken = AuthService.generateAccessToken(user._id);
-			const refreshtoken = AuthService.generateRefreshToken(user._id);
-
-			user.sessions = [...(user as UserType).sessions, refreshtoken];
-			await user.save();
-
-			res.cookie("accessToken", accesstoken, {
-				maxAge: ACCESSORS.LIFE_IN_MS,
-				httpOnly: true,
-			});
-
-			res.cookie("refreshToken", refreshtoken, {
-				maxAge: REFRESHERS.LIFE_IN_MS,
-				httpOnly: true,
-			});
-
-			return res.status(200).json({
-				message: "User logged in successfully!",
-				image: "https://httpcats.com/200.jpg",
-				user: AuthService.purifyUser(user),
-			});
-		}
+	static login() {
+		return [
+			(req: Request, _: Response) => {
+				const validations = validationResult(req);
+				if (!validations.isEmpty())
+					throw new BadRequest(
+						"Validation Errors: ",
+						validations.array()
+					);
+			},
+			passport.authenticate("local"),
+			(req: Request, res: Response) =>
+				res.status(200).json({
+					message: "User logged in successfully!",
+					image: "https://httpcats.com/200.jpg",
+					user: req.user,
+				}),
+		];
 	}
 
-	static async logOut(req: Request, res: Response) {
-		const { _id } = res.locals.user;
-		const user = await User.findOne({ _id });
-
-		if (user === null) throw new NotFound("The user does not exist.");
-		const { refreshToken } = req.cookies;
-		user.sessions = user.sessions.filter(e => e !== refreshToken);
-		await user.save();
-
-		res.clearCookie("accessToken");
-		res.clearCookie("refreshToken");
-
-		return res.status(200).json({
-			message: "User logged out successfully!",
-			image: "https://httpcats.com/200.jpg",
+	static logout(req: Request, res: Response, next: NextFunction) {
+		req.logout(err => {
+			if (err) return next(err);
+			res.status(204).json({
+				message: "User logged out successfully!",
+				image: "https://httpcats.com/204.jpg",
+			});
 		});
 	}
 
-	static async logAllOut(req: Request, res: Response) {
-		const { _id } = res.locals.user;
-		const user = await User.findById(_id, { sessions: [] }, { new: true });
-		if (user === null) throw new NotFound("The user does not exist.");
+	static facebookLogin() {
+		return passport.authenticate("facebook");
+	}
 
-		res.clearCookie("accessToken");
-		res.clearCookie("refreshToken");
-
-		return res.status(200).json({
-			message: "User was logged out entirely, successfully!",
-			image: "https://httpcats.com/200.jpg",
-		});
+	static facebookLoginCallback() {
+		return [
+			passport.authenticate("facebook"),
+			(req: Request, res: Response) =>
+				res.status(200).json({
+					message: "User logged in successfully!",
+					image: "https://httpcats.com/200.jpg",
+					user: req.user,
+				}),
+		];
 	}
 }
